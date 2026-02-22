@@ -1,0 +1,68 @@
+{
+  "version": "1.0.0",
+  "platform": "opencode",
+  "sourceDirectories": ["src", "lib", "app", "components", "pages", "features", "services"],
+  "codeExtensions": [".ts", ".tsx", ".js", ".jsx", ".py", ".go", ".rs", ".java"],
+
+  "pdca": {
+    "planDocPaths": ["docs/01-plan/features/{feature}.plan.md"],
+    "designDocPaths": ["docs/02-design/features/{feature}.design.md"],
+    "analysisDocPaths": ["docs/03-analysis/{feature}.analysis.md"],
+    "reportDocPaths": ["docs/04-report/{feature}.report.md"],
+    "statusFile": "docs/.pdca-status.json",
+    "matchRateThreshold": 90,
+    "autoIterate": true,
+    "maxIterations": 5
+  },
+
+  "agents": {
+    "levelBased": {
+      "Starter": "starter-guide",
+      "Dynamic": "baas-expert",
+      "Enterprise": "enterprise-expert"
+    },
+    "taskBased": {
+      "code review": "code-analyzer",
+      "security scan": "security-architect",
+      "design review": "design-validator",
+      "gap analysis": "gap-detector",
+      "QA": "qa-strategist",
+      "infrastructure": "infra-architect",
+      "frontend": "frontend-architect",
+      "requirements": "product-manager"
+    }
+  },
+
+  "team": {
+    "enabled": true,
+    "maxTeammates": 5,
+    "orchestrationPatterns": {
+      "Dynamic": { "research": "leader", "plan": "leader", "design": "leader", "do": "swarm", "check": "council", "act": "leader" },
+      "Enterprise": { "research": "leader", "plan": "leader", "design": "council", "do": "swarm", "check": "council", "act": "watchdog" }
+    }
+  },
+
+  "models": {},
+
+  "levelDetection": {
+    "enterprise": {
+      "directories": ["kubernetes", "terraform", "k8s", "infrastructure", "helm"],
+      "files": ["docker-compose.yml", "Dockerfile", "terraform.tf"]
+    },
+    "dynamic": {
+      "directories": ["lib/bkend", "supabase", "api", "server"],
+      "packagePatterns": ["@bkend", "supabase", "prisma", "drizzle"]
+    },
+    "default": "Starter"
+  },
+
+  "permissions": {
+    "Write": "allow",
+    "Edit": "allow",
+    "Read": "allow",
+    "Bash": "allow",
+    "Bash(rm -rf*)": "deny",
+    "Bash(git push --force*)": "deny",
+    "Bash(git reset --hard*)": "ask"
+  }
+}

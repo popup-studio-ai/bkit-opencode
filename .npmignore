@@ -1,0 +1,13 @@
+# Test files
+src/**/__tests__/
+src/**/*.test.ts
+src/**/*.spec.ts
+
+# Build output
+dist/
+
+# Development
+.github/
+.git/
+.bkit/
+docs/
