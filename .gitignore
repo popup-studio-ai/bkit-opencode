@@ -1,0 +1,41 @@
+# macOS
+.DS_Store
+
+# Build output
+dist/
+
+# Node
+node_modules/
+bun.lock
+
+# Environment
+.env
+.env.local
+.env*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# bkit runtime state
+.bkit/
+
+# OpenCode runtime
+.opencode/
+.claude/
+
+# PDCA runtime docs (project-specific, generated at runtime)
+docs/01-plan/
+docs/02-design/
+docs/03-analysis/
+docs/04-report/
+docs/.pdca-status.json
+docs/.pdca-snapshots/
+docs/.bkit-memory.json
+docs/archive/
+
+# Test
+test/
+tests/
