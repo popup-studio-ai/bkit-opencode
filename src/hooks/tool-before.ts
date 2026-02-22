@@ -50,7 +50,8 @@ export function createToolBeforeHandler(input: PluginInput) {
           if (!isAllowed) {
             debugLog("ToolBefore", "Tool blocked by allowed-tools", { skill: activeSkill, tool: toolName, allowed: allowedTools })
             if (tool === "bash") {
-              output.args.command = `echo "[bkit] Tool '${toolName}' not in allowed-tools for skill '${activeSkill}'"`
+              const safeName = (s: string) => s.replace(/[^a-zA-Z0-9_.-]/g, "")
+              output.args.command = `echo '[bkit] Tool ${safeName(toolName)} not in allowed-tools for skill ${safeName(activeSkill)}'`
             } else if (tool === "write" && output.args?.file_path) {
               const tmpPath = join(tmpdir(), `.bkit-blocked-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`)
               blockedWritePaths.add(tmpPath)
@@ -111,8 +112,7 @@ export function createToolBeforeHandler(input: PluginInput) {
       if (tool === "bash") {
         const command = output.args?.command || ""
         if (isDangerousCommand(command)) {
-          const preview = normalizeCommand(command).slice(0, 80).replace(/"/g, '\\"')
-          output.args.command = `echo "[bkit] Dangerous command blocked: ${preview}"`
+          output.args.command = `echo '[bkit] Dangerous command blocked'`
           debugLog("ToolBefore", "Blocked dangerous command", { command: command.slice(0, 100) })
         }
       }

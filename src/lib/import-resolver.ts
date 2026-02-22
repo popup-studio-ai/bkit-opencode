@@ -46,6 +46,16 @@ export function resolveImportPath(importPath: string, fromFile: string): string 
   if (resolved.startsWith("./") || resolved.startsWith("../")) {
     resolved = resolve(dirname(fromFile), resolved)
   }
+
+  // Boundary check: resolved path must stay within known roots
+  const allowedRoots = [getPluginRoot(), getProjectDir(), join(homedir(), ".opencode", "bkit")]
+  const normalized = resolve(resolved)
+  const withinBounds = allowedRoots.some(root => normalized.startsWith(resolve(root) + "/") || normalized === resolve(root))
+  if (!withinBounds) {
+    debugLog("ImportResolver", "Import path outside allowed boundaries", { importPath, resolved: normalized })
+    return ""
+  }
+
   return resolved
 }
 

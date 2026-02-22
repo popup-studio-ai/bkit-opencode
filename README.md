@@ -43,14 +43,14 @@ bkit implements Context Engineering through three interconnected layers:
 Context injection occurs through OpenCode's plugin hook system:
 
 ```
-Hook 1: config              → Agent/skill/MCP registration, permissions
-Hook 2: session (event)     → PDCA init, level detection, team state
-Hook 3: chat.message        → Intent detection, skill/agent triggers
-Hook 4: tool.execute.before → Skill activation, tool constraints
-Hook 5: tool.execute.after  → PDCA phase auto-advance, document tracking
-Hook 6: system-prompt       → PDCA status injection, next-step guidance
-Hook 7: compaction          → State preservation across context compaction
-Hook 8: permission          → Dangerous command filtering
+Hook 1: config                                → Agent/skill/MCP registration, permissions
+Hook 2: event                                 → PDCA init, level detection, team state
+Hook 3: chat.message                          → Intent detection, skill/agent triggers
+Hook 4: tool.execute.before                   → Skill activation, tool constraints
+Hook 5: tool.execute.after                    → PDCA phase auto-advance, document tracking
+Hook 6: experimental.chat.system.transform    → PDCA status injection, next-step guidance
+Hook 7: experimental.session.compacting       → State preservation across context compaction
+Hook 8: permission.ask                        → Dangerous command filtering
 ```
 
 > **Learn more**: See [AI-NATIVE-DEVELOPMENT.md](AI-NATIVE-DEVELOPMENT.md) for detailed methodology.
@@ -77,7 +77,7 @@ Hook 8: permission          → Dangerous command filtering
 
 | Requirement | Minimum Version | Notes |
 |-------------|:---------------:|-------|
-| **OpenCode** | Latest | Required. bkit uses `@opencode-ai/plugin` SDK |
+| **OpenCode** | 0.1+ | Required. bkit uses `@opencode-ai/plugin` ^1.2.4 |
 | **Bun** | 1.3+ | OpenCode's runtime |
 
 ---
@@ -100,9 +100,11 @@ OpenCode will automatically install the plugin from npm on next launch.
 ```bash
 # Clone for local development
 git clone https://github.com/popup-studio-ai/bkit-opencode.git
+```
 
-# Use as local plugin
-# In your project's opencode.json:
+Then add as a local plugin in your project's `opencode.json`:
+
+```jsonc
 {
   "plugin": ["file:///path/to/bkit-opencode/src/index.ts"]
 }

@@ -52,18 +52,33 @@ cd bkit-opencode
 bun install
 
 # Link for local testing
-# Option 1: Add as file plugin in your project's opencode.json
+# Option 1: Add as file plugin in your project's opencode.json:
+```
+
+```jsonc
 {
   "plugin": ["file:///path/to/bkit-opencode/src/index.ts"]
 }
+```
 
+```bash
 # Option 2: Symlink into .opencode/plugins/
 ln -s /path/to/bkit-opencode ~/.opencode/plugins/bkit-opencode
 ```
 
 ## Testing
 
-- Test all hooks with OpenCode
+### Automated Tests
+
+```bash
+bun run test       # vitest — unit tests (40 tests)
+bun run typecheck  # tsc --noEmit — type checking
+```
+
+### Manual Integration Testing
+
+Automated tests cover core logic, but hook and agent behavior requires running OpenCode with the plugin loaded:
+
 - Verify agent triggering and PDCA workflow
 - Test with all three project levels (Starter/Dynamic/Enterprise)
 - Check Agent Teams functionality

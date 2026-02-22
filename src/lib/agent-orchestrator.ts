@@ -108,11 +108,15 @@ function parseAgentFrontmatter(content: string, agentName: string): AgentBehavio
  * Reads and parses the agent's .md frontmatter with 30s cache.
  */
 export function getAgentConfig(agentName: string): AgentBehavioralConfig | null {
-  const cached = _cache.get(agentName)
+  // Sanitize: strip path separators and traversal sequences
+  const safeName = agentName.replace(/[^a-zA-Z0-9_-]/g, "")
+  if (!safeName) return null
+
+  const cached = _cache.get(safeName)
   if (cached && Date.now() - cached.ts < CACHE_TTL) return cached.config
 
   const pluginRoot = getPluginRoot()
-  const agentPath = join(pluginRoot, "..", "agents", `${agentName}.md`)
+  const agentPath = join(pluginRoot, "..", "agents", `${safeName}.md`)
 
   if (!existsSync(agentPath)) {
     debugLog("AgentOrch", "Agent file not found", { agentName, path: agentPath })
@@ -121,8 +125,8 @@ export function getAgentConfig(agentName: string): AgentBehavioralConfig | null 
 
   try {
     const content = readFileSync(agentPath, "utf8")
-    const config = parseAgentFrontmatter(content, agentName)
-    _cache.set(agentName, { config, ts: Date.now() })
+    const config = parseAgentFrontmatter(content, safeName)
+    _cache.set(safeName, { config, ts: Date.now() })
     debugLog("AgentOrch", "Config loaded", { agentName, model: config.model, mode: config.mode })
     return config
   } catch (e: any) {

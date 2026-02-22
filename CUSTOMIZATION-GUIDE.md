@@ -55,14 +55,14 @@ In essence: **AI guides humans toward good development practices**.
 ### Layered Trigger System
 
 ```
-Hook 1: config              → Agent/skill registration at startup
-Hook 2: session (event)     → Per-session state initialization
-Hook 3: chat.message        → Intent detection, auto-triggering
-Hook 4: tool.execute.before → Guard rails, skill constraints
-Hook 5: tool.execute.after  → Auto-advance, document tracking
-Hook 6: system-prompt       → Dynamic context injection
-Hook 7: compaction          → State preservation
-Hook 8: permission          → Security filtering
+Hook 1: config                                → Agent/skill registration at startup
+Hook 2: event                                 → Per-session state initialization
+Hook 3: chat.message                          → Intent detection, auto-triggering
+Hook 4: tool.execute.before                   → Guard rails, skill constraints
+Hook 5: tool.execute.after                    → Auto-advance, document tracking
+Hook 6: experimental.chat.system.transform    → Dynamic context injection
+Hook 7: experimental.session.compacting       → State preservation
+Hook 8: permission.ask                        → Security filtering
 ```
 
 ### Level-Based Adaptation
@@ -413,13 +413,13 @@ Then update `bkit.config.json` to point to your templates directory.
 | Hook | When | Use Case |
 |------|------|----------|
 | `config` | Plugin init | Register agents, skills, tools |
-| `event` (session) | Session created/deleted | Initialize state |
+| `event` | Session created/deleted | Initialize state |
 | `chat.message` | User sends message | Intent detection, auto-triggers |
 | `tool.execute.before` | Before tool runs | Guard rails, validation |
 | `tool.execute.after` | After tool runs | Auto-advance, tracking |
-| `system-prompt` | System prompt generation | Context injection |
-| `compaction` | Context compressed | State preservation |
-| `permission` | Permission check | Security filtering |
+| `experimental.chat.system.transform` | System prompt generation | Context injection |
+| `experimental.session.compacting` | Context compressed | State preservation |
+| `permission.ask` | Permission check | Security filtering |
 
 ### Extending via Your Own Plugin
 
@@ -429,11 +429,12 @@ Create a companion plugin that hooks into the same lifecycle:
 // .opencode/plugin/my-extension.ts
 import type { Plugin } from "@opencode-ai/plugin"
 
-const MyExtension: Plugin = async (ctx) => {
+const MyExtension: Plugin = async (input) => {
   return {
-    "tool.execute.after": async ({ input }) => {
+    "tool.execute.after": async (toolInput, output) => {
       // Add custom post-tool logic
-      console.log("Tool executed:", input.tool)
+      console.log("Tool executed:", toolInput.tool)
+      // output.title, output.output, output.metadata are mutable
     }
   }
 }
